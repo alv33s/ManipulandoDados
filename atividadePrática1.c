@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_ALUNOS 94
-#define MAX_NOME 20
+#define MAX_ALUNOS 100
+#define MAX_NOME 50
 #define MAX_NOTAS 10
 
 typedef struct {
@@ -17,26 +17,20 @@ typedef struct {
 } Aluno;
 
 int lerAlunos(Aluno alunos[]);
+void calcularMediaSituacao(Aluno *aluno);
+void salvarSituacaoFinal(Aluno alunos[], int num_alunos);
 
 int main() {
     Aluno alunos[MAX_ALUNOS];
     int num_alunos;
 
     num_alunos = lerAlunos(alunos);
-    FILE *arquivo;
-    arquivo = fopen("SituacaoFinal.csv", "w");
-    if (arquivo == NULL) {
-        printf("Erro ao criar o arquivo de saída.\n");
-        exit(1);
-    }
 
     for (int i = 0; i < num_alunos; i++) {
-        fprintf(arquivo, "%s\n", alunos[i].nome);
+        calcularMediaSituacao(&alunos[i]);
     }
 
-    fclose(arquivo);
    
-
 
     return 0;
 }
@@ -82,3 +76,17 @@ int lerAlunos(Aluno alunos[]) {
 
     return num_alunos;
 }
+void calcularMediaSituacao(Aluno *aluno) {
+    float soma = 0;
+    for (int i = 0; i < aluno->num_notas; i++) {
+        soma += aluno->notas[i];
+    }
+    aluno->media = soma / aluno->num_notas;
+    if (aluno->media >= 7.0) {
+        strcpy(aluno->situacao, "APROVADO");
+    } else {
+        strcpy(aluno->situacao, "REPROVADO");
+    }
+}
+
+
